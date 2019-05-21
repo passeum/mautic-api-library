@@ -107,4 +107,15 @@ class Segments extends Api
     {
         return $this->removeContact($id, $leadId);
     }
+
+    /**
+     * Create new segment
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function createSegment()
+    {
+        return $this->makeRequest($this->endpoint.'/new', $parameters, 'POST');
+    }
 }

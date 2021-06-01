@@ -1,8 +1,20 @@
+[![codecov](https://codecov.io/gh/mautic/api-library/branch/master/graph/badge.svg)](https://codecov.io/gh/mautic/api-library) [![Latest Stable Version](https://poser.pugx.org/mautic/api-library/v)](//packagist.org/packages/mautic/api-library) [![Total Downloads](https://poser.pugx.org/mautic/api-library/downloads)](//packagist.org/packages/mautic/api-library) [![Latest Unstable Version](https://poser.pugx.org/mautic/api-library/v/unstable)](//packagist.org/packages/mautic/api-library) [![License](https://poser.pugx.org/mautic/api-library/license)](//packagist.org/packages/mautic/api-library)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 # Using the Mautic API Library
 
 ## Requirements
-* PHP 5.3.7 or newer
+* PHP 7.2 or newer
 * cURL support
+
+## Installing the API Library
+You can install the API Library with the following command:
+
+```bash
+composer require mautic/api-library
+```
 
 ## Mautic Setup
 The API must be enabled in Mautic. Within Mautic, go to the Configuration page (located in the Settings menu) and under API Settings enable
@@ -32,13 +44,13 @@ $secretKey = '';
 $callback  = '';
 
 // ApiAuth->newAuth() will accept an array of Auth settings
-$settings = array(
+$settings = [
     'baseUrl'          => '',       // Base URL of the Mautic instance
     'version'          => 'OAuth2', // Version of the OAuth can be OAuth2 or OAuth1a. OAuth2 is the default value.
     'clientKey'        => '',       // Client/Consumer key from Mautic
     'clientSecret'     => '',       // Client/Consumer secret key from Mautic
-    'callback'         => ''        // Redirect URI/Callback URI for this script
-);
+    'callback'         => '',       // Redirect URI/Callback URI for this script
+];
 
 /*
 // If you already have the access token, et al, pass them in as well to prevent the need for reauthorization
@@ -50,7 +62,7 @@ $settings['refreshToken']       = $refreshToken;
 
 // Initiate the auth object
 $initAuth = new ApiAuth();
-$auth = $initAuth->newAuth($settings);
+$auth     = $initAuth->newAuth($settings);
 
 // Initiate process for obtaining an access token; this will redirect the user to the $authorizationUrl and/or
 // set the access_tokens when the user is redirected back after granting authorization
@@ -94,14 +106,14 @@ use Mautic\Auth\ApiAuth;
 session_start();
 
 // ApiAuth->newAuth() will accept an array of Auth settings
-$settings = array(
+$settings = [
     'userName'   => '',             // Create a new user       
-    'password'   => ''              // Make it a secure password
-);
+    'password'   => '',             // Make it a secure password
+];
 
 // Initiate the auth object specifying to use BasicAuth
 $initAuth = new ApiAuth();
-$auth = $initAuth->newAuth($settings, 'BasicAuth');
+$auth     = $initAuth->newAuth($settings, 'BasicAuth');
 
 // Nothing else to do ... It's ready to use.
 // Just pass the auth object to the API context you are creating.
@@ -110,17 +122,23 @@ $auth = $initAuth->newAuth($settings, 'BasicAuth');
 **Note:** If the credentials are incorrect an error response will be returned.
 
 ```php
- array('error' => array(
-       'code'    => 403,
-       'message' => 'access_denied: OAuth2 authentication required' )
- )
+ [
+    'errors' => [
+        [
+            'code'    => 403,
+            'message' => 'access_denied: OAuth2 authentication required',
+            'type'    => 'access_denied',
+        ],
+    ],
+ ];
 
 ```
 **Note:** You can also specify a CURLOPT_TIMEOUT in the request (default is set to wait indefinitely):
 ```php
 $initAuth = new ApiAuth();
-$auth = $initAuth->newAuth($settings, 'BasicAuth');
-$timeout = 10;
+$auth     = $initAuth->newAuth($settings, 'BasicAuth');
+$timeout  = 10;
+
 $auth->setCurlTimeout($timeout);
 ```
 
@@ -137,7 +155,7 @@ use Mautic\MauticApi;
 // Create an api context by passing in the desired context (Contacts, Forms, Pages, etc), the $auth object from above
 // and the base URL to the Mautic server (i.e. http://my-mautic-server.com/api/)
 
-$api = new MauticApi();
+$api        = new MauticApi();
 $contactApi = $api->newApi('contacts', $auth, $apiUrl);
 ```
 
@@ -152,12 +170,12 @@ All of the above contexts support the following functions for retrieving items:
 <?php
 
 $response = $contactApi->get($id);
-$contact = $response[$contactApi->itemName()];
+$contact  = $response[$contactApi->itemName()];
 
 // getList accepts optional parameters for filtering, limiting, and ordering
-$response = $contactApi->getList($filter, $start, $limit, $orderBy, $orderByDir);
+$response      = $contactApi->getList($filter, $start, $limit, $orderBy, $orderByDir);
 $totalContacts = $response['total'];
-$contact = $response[$contactApi->listName()];
+$contact       = $response[$contactApi->listName()];
 ```
 
 ### Creating an item
@@ -178,7 +196,7 @@ $data['ipAddress'] = $ipAddress;
 
 // Create the contact
 $response = $contactApi->create($data);
-$contact = $response[$contactApi->itemName()];
+$contact  = $response[$contactApi->itemName()];
 ```
 
 ### Editing an item
@@ -187,17 +205,17 @@ $contact = $response[$contactApi->itemName()];
 ```php
 <?php
 
-$updatedData = array(
+$updatedData = [
     'firstname' => 'Updated Name'
-);
+];
 
 $response = $contactApi->edit($contactId, $updatedData);
-$contact = $response[$contactApi->itemName()];
+$contact  = $response[$contactApi->itemName()];
 
 // If you want to create a new contact in the case that $contactId no longer exists
 // $response will be populated with the new contact item
 $response = $contactApi->edit($contactId, $updatedData, true);
-$contact = $response[$contactApi->itemName()];
+$contact  = $response[$contactApi->itemName()];
 ```
 
 ### Deleting an item
@@ -206,7 +224,7 @@ $contact = $response[$contactApi->itemName()];
 <?php
 
 $response = $contactApi->delete($contactId);
-$contact = $response[$contactApi->itemName()];
+$contact  = $response[$contactApi->itemName()];
 ```
 
 ### Error handling
@@ -217,25 +235,50 @@ $contact = $response[$contactApi->itemName()];
 // $response returned by an API call should be checked for errors
 $response = $contactApi->delete($contactId);
 
-if (isset($response['error'])) {
-    echo $response['error']['code'] . ": " . $response['error']['message'];
-} else {
-    // do whatever with the info
+if (isset($response['errors'])) {
+    foreach ($response['errors'] as $error) {
+        echo $error['code'] . ": " . $error['message'];
+    }
 }
 ```
 
-## Unit tests
+## Contributing
 
-Configure the unit tests config before running the unit tests. The tests fire real API requests to a Mautic instance.
+### Setting up your environment (automatically)
+In order to get started quickly, we recommend that you use [DDEV](https://ddev.readthedocs.io/en/stable/) which sets things up automatically for you. It clones [https://github.com/mautic/mautic](mautic/mautic), sets up a local instance for you, and connects the API library tests to that instance.
 
-1. Copy `/tests/local.config.php.dist` to `/tests/local.config.php`.
-2. Open the API tester in the browser like http://localhost/api-library/apitester/index.php
-3. Fill in the URL of your Mautic instance.
-4. Click Submit to store the URL to the session.
-5. Fill in one of the OAuth credentials and authorize.
-6. Open the $_SESSION array and copy the 'access_token' to the local.config.php file.
-7. Then run `vendor/bin/phpunit` to run the tests.
+To get started, run `ddev start`! Our first-run experience will guide you through the setup.
 
-Modify this command to run a specific test: `vendor/bin/phpunit --filter testCreateGetAndDelete tests/Api/NotesTest.php`
+### Setting up your environment (manually)
+If you want to set up your local environment manually, ensure that you copy `/tests/local.config.php.dist` to `/tests/local.config.php`, and fill in the required settings. We recommend using the Basic Authentication method to get up and running quickly.
 
-Modify this command to run all tests in one class: `vendor/bin/phpunit --filter test tests/Api/NotesTest.php`
+### Unit tests
+
+Configure the unit tests config before running the unit tests. The tests fire real API requests to a Mautic instance. 
+
+1. Ensure you have set up your local environment using the steps above.
+2. Run `composer test` to run the tests.
+
+Modify this command to run a specific test: `composer test -- --filter testCreateGetAndDelete tests/Api/NotesTest.php`
+
+Modify this command to run all tests in one class: `composer test -- --filter test tests/Api/NotesTest.php`
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://webmecanik.com"><img src="https://avatars.githubusercontent.com/u/462477?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zdeno Kuzmany</b></sub></a><br /><a href="https://github.com/mautic/api-library/commits?author=kuzmany" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

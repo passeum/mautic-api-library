@@ -1,9 +1,10 @@
 <?php
 /**
- * @package     Mautic
  * @copyright   2014 Mautic, NP. All rights reserved.
  * @author      Mautic
- * @link        http://mautic.org
+ *
+ * @see        http://mautic.org
+ *
  * @license     MIT http://opensource.org/licenses/MIT
  */
 
@@ -15,13 +16,13 @@ class CompanyFieldTest extends ContactFieldsTest
 {
     protected $prefix = 'Company ';
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->api = $this->getContext('companyFields');
-        $this->testPayload = array(
+        $this->api         = $this->getContext('companyFields');
+        $this->testPayload = [
             'label' => $this->prefix.'API test field',
-            'type' => 'text',
-        );
+            'type'  => 'text',
+        ];
     }
 
     protected function assertFieldPayloadList($response)
@@ -38,11 +39,11 @@ class CompanyFieldTest extends ContactFieldsTest
     // Except following, ignore them
     public function testBooleanField()
     {
-        return;
+        $this->markTestSkipped('Inherited method but not applicable');
     }
 
     public function testDefaultFieldValue()
     {
-        return;
+        $this->markTestSkipped('Inherited method but not applicable');
     }
 }

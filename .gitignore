@@ -3,7 +3,6 @@
 /.project
 /.settings
 /.phpintel
-/composer.lock
 /phpunit.xml
 /tests/local.config.php
 /tests/local.config.php_*
@@ -11,3 +10,6 @@
 /tests/phpunit.phar
 /vendor
 .DS_Store
+.phpunit.result.cache
+/.ddev/mautic-preference
+/mautic
